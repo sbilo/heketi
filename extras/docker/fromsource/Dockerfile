@@ -1,7 +1,7 @@
 # set author and base
 # need to use fedora 27 until glide is fixed in fedora 28
 # (or we get an alternative glide)
-FROM fedora:27
+FROM arm32v7/fedora:27
 MAINTAINER Heketi Developers <heketi-devel@gluster.org>
 
 LABEL version="1.3.1"
@@ -15,8 +15,8 @@ ENV HEKETI_BRANCH="master"
 
 # install dependencies, build and cleanup
 RUN mkdir $BUILD_HOME $GOPATH && \
-    dnf -y install glide golang git make mercurial && \
-    dnf -y clean all && \
+    dnf -y --forcearch=armv7hnl install glide golang git make mercurial && \
+    dnf -y --forcearch=armv7hnl clean all && \
     mkdir -p $GOPATH/src/github.com/heketi && \
     cd $GOPATH/src/github.com/heketi && \
     git clone -b $HEKETI_BRANCH https://github.com/heketi/heketi.git && \
@@ -27,9 +27,9 @@ RUN mkdir $BUILD_HOME $GOPATH && \
     cp client/cli/go/heketi-cli /usr/bin/heketi-cli && \
     glide cc && \
     cd && rm -rf $BUILD_HOME && \
-    dnf -y remove git glide golang mercurial && \
-    dnf -y autoremove && \
-    dnf -y clean all
+    dnf -y --forcearch=armv7hnl remove git glide golang mercurial && \
+    dnf -y --forcearch=armv7hnl autoremove && \
+    dnf -y --forcearch=armv7hnl clean all
 
 # post install config and volume setup
 ADD ./heketi.json /etc/heketi/heketi.json
